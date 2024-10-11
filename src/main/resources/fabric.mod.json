@@ -14,7 +14,7 @@
       "io.github.burritobandit28.lmc.client.LmcClient"
     ],
     "main": [
-      "io.github.burritobandit28.lmc.Lmc"
+      "io.github.burritobandit28.lmc.LMC"
     ]
   },
   "mixins": [
