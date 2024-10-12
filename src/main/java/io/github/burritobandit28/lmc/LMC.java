@@ -1,5 +1,6 @@
 package io.github.burritobandit28.lmc;
 
+import io.github.burritobandit28.lmc.blocks.ComputerBlock;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -12,11 +13,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Console;
 import java.util.*;
 
 public class LMC implements ModInitializer {
 
-    public static final Block temp_cb = new Block(AbstractBlock.Settings.copy(Blocks.COPPER_BLOCK));
+
 
     
     public static Identifier ID(String path) {
@@ -27,11 +29,12 @@ public class LMC implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        Registry.register(Registries.BLOCK, Identifier.of("lmc","computer"), temp_cb);
         AllModStuffRegister.registerItems();
+        AllModStuffRegister.registerBlocks();
+        AllModStuffRegister.registerBlockEntities();
     }
 
-    public ArrayList<String> translate(String lmc) {
+    public static ArrayList<String> translate(String lmc) {
         String file = lmc;
 
         file = file.replaceAll("\\bLDA\\b", "5");
@@ -40,6 +43,7 @@ public class LMC implements ModInitializer {
         file = file.replaceAll("\\bSUB\\b", "2");
         file = file.replaceAll("\\bINP\\b", "901");
         file = file.replaceAll("\\bOUT\\b", "902");
+        file = file.replaceAll("\\bTICK\\b", "903");
         file = file.replaceAll("\\bHLT\\b", "000");
         file = file.replaceAll("\\bBRZ\\b", "7");
         file = file.replaceAll("\\bBRP\\b", "8");
@@ -86,10 +90,10 @@ public class LMC implements ModInitializer {
             StringBuilder before = new StringBuilder();
             StringBuilder after = new StringBuilder();
             int indx = 0;
-            char_loop : for (int i = 0; i < line.length(); i++){
+            for (int i = 0; i < line.length(); i++){
                 char c = line.charAt(i);
                 if (Character.isAlphabetic(c)) {
-                    break char_loop;
+                    break;
                 }
                 before.append(c);
                 indx+=1;
@@ -127,4 +131,5 @@ public class LMC implements ModInitializer {
         }
         return memory;
     }
+
 }

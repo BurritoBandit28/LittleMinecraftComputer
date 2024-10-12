@@ -4,25 +4,21 @@
   "version": "${version}",
   "name": "Little Minecraft Computer",
   "description": "Adds simple computers to Minecraft, using the educational low level language of Little Man Computer",
-  "authors": [],
+  "authors": ["BurritoBandit28"],
   "contact": {},
   "license": "MIT",
   "icon": "assets/lmc/icon.png",
   "environment": "*",
   "entrypoints": {
     "client": [
-      "io.github.burritobandit28.lmc.client.LmcClient"
+      "io.github.burritobandit28.lmc.client.LMCClient"
     ],
     "main": [
       "io.github.burritobandit28.lmc.LMC"
     ]
   },
   "mixins": [
-    "lmc.mixins.json",
-    {
-      "config": "lmc.client.mixins.json",
-      "environment": "client"
-    }
+    "lmc.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=${loader_version}",
