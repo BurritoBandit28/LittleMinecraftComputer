@@ -11,18 +11,22 @@
   "environment": "*",
   "entrypoints": {
     "client": [
-      "io.github.burritobandit28.lmc.client.LMCClient"
+      "io.github.burritobandit28.LMCClient"
     ],
     "main": [
       "io.github.burritobandit28.lmc.LMC"
     ]
   },
   "mixins": [
-    "lmc.mixins.json"
+    "lmc.mixins.json",
+    {
+      "config": "lmc.client.mixins.json",
+      "environment": "client"
+    }
   ],
   "depends": {
-    "fabricloader": ">=${loader_version}",
+    "fabricloader": ">=0.16.7",
     "fabric": "*",
-    "minecraft": "${minecraft_version}"
+    "minecraft": "~1.21.1"
   }
 }

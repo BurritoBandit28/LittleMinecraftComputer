@@ -1,7 +1,19 @@
 {
   "variants": {
-    "": {
+    "facing=east": {
+      "model": "lmc:block/computer",
+      "y": 90
+    },
+    "facing=north": {
       "model": "lmc:block/computer"
+    },
+    "facing=west": {
+      "model": "lmc:block/computer",
+      "y": 270
+    },
+    "facing=south": {
+      "model": "lmc:block/computer",
+      "y": 180
     }
   }
 }

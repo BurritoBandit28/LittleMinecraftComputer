@@ -1,4 +1,4 @@
-package io.github.burritobandit28.lmc.client;
+package io.github.burritobandit28;
 
 import net.fabricmc.api.ClientModInitializer;
 

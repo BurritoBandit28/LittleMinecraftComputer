@@ -12,10 +12,14 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -23,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ComputerBlockEntity extends BlockEntity implements ExtendedScreenHandlerFactory, Inventory {
+public class ComputerBlockEntity extends BlockEntity implements NamedScreenHandlerFactory, Inventory {
 
     public static BlockEntityType<ComputerBlockEntity> COMPUTER_BLOCK_ENTITY;
 
@@ -45,7 +49,7 @@ public class ComputerBlockEntity extends BlockEntity implements ExtendedScreenHa
 
     private boolean active;
 
-    // todo : save active, tick delay, acc, pc and clockspeed as NBT
+
 
     public ComputerBlockEntity(BlockPos pos, BlockState state) {
         super(COMPUTER_BLOCK_ENTITY, pos, state);
@@ -68,7 +72,7 @@ public class ComputerBlockEntity extends BlockEntity implements ExtendedScreenHa
                 """));
         this.pc = 0;
         this.acc = 0;
-        this.active = true; // change
+        this.active = false;
         this.tick=4;
         this.tickDelay = 0;
         this.currentTape = ItemStack.EMPTY;
@@ -103,6 +107,45 @@ public class ComputerBlockEntity extends BlockEntity implements ExtendedScreenHa
         };
 
 
+
+    }
+
+    @Override
+    protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
+        ArrayList<Integer> memAsInt = new ArrayList<>();
+        for (String instruction : this.memory ) {
+            memAsInt.add(Integer.parseInt(instruction));
+        }
+        nbt.putIntArray("memory",memAsInt);
+        nbt.putBoolean("active", this.active);
+        nbt.putInt("tick_delay", this.tickDelay);
+        nbt.putInt("accumulator", this.acc);
+        nbt.putInt("clockspeed", this.clockSpeed);
+        nbt.putInt("output_ticks", this.tick);
+        nbt.putInt("pc", this.pc);
+        DefaultedList<ItemStack> inventory = DefaultedList.of();
+        inventory.add(this.currentTape);
+        Inventories.writeNbt(nbt, inventory, registryLookup);
+
+    }
+
+    @Override
+    protected void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
+        super.readNbt(nbt, registryLookup);
+        ArrayList<String> memAsStr = new ArrayList<>();
+        for (int instruction : nbt.getIntArray("memory") ) {
+            memAsStr.add(String.valueOf(instruction));
+        }
+        this.memory = memAsStr;
+        this.active = nbt.getBoolean("active");
+        this.tickDelay = nbt.getInt("tick_delay");
+        this.acc = nbt.getInt("accumulator");
+        this.clockSpeed = nbt.getInt("clockspeed");
+        this.tick = nbt.getInt("output_ticks");
+        this.pc = nbt.getInt("pc");
+        DefaultedList<ItemStack> inventory = DefaultedList.ofSize(1,ItemStack.EMPTY);
+        Inventories.readNbt(nbt, inventory, registryLookup);
+        this.currentTape = inventory.getFirst();
 
     }
 
@@ -158,20 +201,27 @@ public class ComputerBlockEntity extends BlockEntity implements ExtendedScreenHa
                             self.tick = self.acc;
                         } else {
                             // output redstone
-                            LMC.LOGGER.info(String.valueOf(self.acc));
+                            //LMC.LOGGER.info(String.valueOf(self.acc));
                         }
                     }
                     default -> {
                         self.active = false;
+                        self.pc = 0;
+                        self.acc = 0;
+                        // todo read memory from tape to reset
+                        return;
                     }
                 }
                 self.pc++;
                 world.updateComparators(pos, ModBlocks.COMPUTER_BLOCK);
                 world.updateNeighbors(pos, ModBlocks.COMPUTER_BLOCK);
             }
-            self.tickDelay++;
+            else if (self.active) {
+                self.tickDelay++;
+            }
         }
     }
+
 
     private void lda(int address, BlockPos pos) {
         if (this.memory.size() < address + 1) {
@@ -242,11 +292,6 @@ public class ComputerBlockEntity extends BlockEntity implements ExtendedScreenHa
     @Override
     public void clear() {
         this.currentTape = ItemStack.EMPTY;
-    }
-
-    @Override
-    public Object getScreenOpeningData(ServerPlayerEntity serverPlayerEntity) {
-        return null;
     }
 
 }
