@@ -31,6 +31,9 @@ public class ModItems {
     // computer block item
     public static final BlockItem COMPUTER_BLOCK_ITEM = new BlockItem(ModBlocks.COMPUTER_BLOCK, new Item.Settings());
 
+    // io block
+    public static final BlockItem IO_BLOCK_ITEM = new BlockItem(ModBlocks.IO_BLOCK, new Item.Settings());
+
 
 
     public static void registerMagneticTape() {

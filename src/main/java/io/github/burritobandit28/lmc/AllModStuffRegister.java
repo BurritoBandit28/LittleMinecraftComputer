@@ -23,12 +23,18 @@ public class AllModStuffRegister {
             itemGroup.add(ModItems.COMPUTER_BLOCK_ITEM);
         });
 
+        Registry.register(Registries.ITEM, LMC.ID("io_block"), ModItems.IO_BLOCK_ITEM);
+        ItemGroupEvents.modifyEntriesEvent(ModItems.LMC_GROUP_KEY).register(itemGroup -> {
+            itemGroup.add(ModItems.IO_BLOCK_ITEM);
+        });
+
         // tapes
         ModItems.registerMagneticTape();
     }
 
     public static void registerBlocks() {
         Registry.register(Registries.BLOCK, Identifier.of("lmc","computer"), ModBlocks.COMPUTER_BLOCK);
+        Registry.register(Registries.BLOCK, LMC.ID("io_block"), ModBlocks.IO_BLOCK);
     }
 
     public static void registerBlockEntities() {

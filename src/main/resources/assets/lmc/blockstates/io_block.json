@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "io_action=input": {
+      "model": "lmc:block/io_input"
+    },
+    "io_action=output": {
+      "model": "lmc:block/io_output"
+    }
+  }
+}
